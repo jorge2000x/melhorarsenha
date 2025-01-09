@@ -148,7 +148,7 @@
         </tr>
         <tr>
             <td class="config-button">
-                <button onclick="toggleConfig()"><i class="fas fa-cogs"></i></button> <!-- Ícone de configurações -->
+                <button onclick="toggleConfig()"><i class="fas fa-cogs"></i> Opções</button> <!-- Ícone de configurações -->
             </td>
         </tr>
         <tr>
@@ -174,14 +174,17 @@
         function toggleConfig() {
             const panel = document.getElementById('configPanel');
             const button = document.querySelector('.config-button button');
-            if (panel.style.display === 'none') {
+            const icon = button.querySelector('i');  // Pegando o ícone do botão
+            
+            // Verificando se o painel está visível ou não
+            if (panel.style.display === 'none' || panel.style.display === '') {
+                // Exibindo o painel e alterando o texto do botão
                 panel.style.display = 'block';
-                button.textContent = 'Ocultar Configurações';
-                button.prepend(document.createElement('i').classList.add('fas', 'fa-cogs')); // Ícone de configurações
+                button.innerHTML = '<i class="fas fa-cogs"></i> Ocultar Configurações'; // Modificando o texto e o ícone
             } else {
+                // Ocultando o painel e alterando o texto do botão
                 panel.style.display = 'none';
-                button.textContent = 'Configurações Avançadas';
-                button.prepend(document.createElement('i').classList.add('fas', 'fa-cogs'));
+                button.innerHTML = '<i class="fas fa-cogs"></i> Configurações Avançadas'; // Modificando o texto e o ícone
             }
         }
 
@@ -236,4 +239,3 @@
     </script>
 </body>
 </html>
-
