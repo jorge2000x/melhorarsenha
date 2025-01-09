@@ -174,17 +174,16 @@
         function toggleConfig() {
             const panel = document.getElementById('configPanel');
             const button = document.querySelector('.config-button button');
-            const icon = button.querySelector('i');  // Pegando o ícone do botão
             
             // Verificando se o painel está visível ou não
             if (panel.style.display === 'none' || panel.style.display === '') {
-                // Exibindo o painel e alterando o texto do botão
+                // Exibindo o painel e alterando o texto do botão para "Ocultar Opções"
                 panel.style.display = 'block';
-                button.innerHTML = '<i class="fas fa-cogs"></i> Ocultar Configurações'; // Modificando o texto e o ícone
+                button.innerHTML = '<i class="fas fa-cogs"></i> Ocultar Opções'; // Texto e ícone alterados
             } else {
-                // Ocultando o painel e alterando o texto do botão
+                // Ocultando o painel e alterando o texto do botão para "Opções"
                 panel.style.display = 'none';
-                button.innerHTML = '<i class="fas fa-cogs"></i> Configurações Avançadas'; // Modificando o texto e o ícone
+                button.innerHTML = '<i class="fas fa-cogs"></i> Opções'; // Texto e ícone alterados
             }
         }
 
