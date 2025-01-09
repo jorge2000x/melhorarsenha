@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <title>Fortalecedor de Senhas</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha3/0.8.0/sha3.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- Font Awesome -->
+    <style>
+        body {
+            font-family: Georgia, "Times New Roman", Times, serif;
+            background: #f0f0f0;
+            margin: 30px;
+            color: #333;
+        }
+        table {
+            border: 2px solid #666;
+            background: #fff;
+            padding: 25px;
+            margin: 0 auto;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            margin: 0 0 20px 0;
+            color: #444;
+            font-size: 24px;
+            text-align: center;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+        }
+        td {
+            padding: 8px;
+        }
+        label {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 5px;
+            display: block;
+        }
+        input {
+            margin: 5px 0;
+            width: 250px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        input:focus {
+            outline: none;
+            border-color: #666;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+        input[type="number"] {
+            width: 120px;
+        }
+        input[type="checkbox"] {
+            width: auto;
+            margin-right: 5px;
+        }
+        button {
+            margin: 10px 0;
+            padding: 8px 20px;
+            background: #4a4a4a;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #666;
+        }
+        .config-button button {
+            background: #666;
+            font-size: 12px;
+            padding: 6px 15px;
+        }
+        .config-button button:hover {
+            background: #777;
+        }
+        .result {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-top: 15px;
+            background: #fafafa;
+            border-radius: 4px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .config {
+            border-top: 1px solid #ddd;
+            margin-top: 15px;
+            padding-top: 15px;
+        }
+        #configPanel {
+            display: none;
+            background: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+        }
+        .checkbox-label {
+            display: block;
+            margin: 8px 0;
+            font-size: 13px;
+            color: #666;
+            cursor: pointer;
+        }
+        .checkbox-label:hover {
+            color: #444;
+        }
+        .copy-text {
+            font-family: monospace;
+            background: #f5f5f5;
+            padding: 5px;
+            border-radius: 3px;
+            border: 1px solid #eee;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <table>
+        <tr>
+            <td align="center"><h2>Fortalecedor de Senhas</h2></td>
+        </tr>
+        <tr>
+            <td>
+                <label>Senha:</label>
+                <input type="password" id="password" placeholder="Digite sua senha">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>Índice:</label>
+                <input type="number" id="index" min="1" max="10000" value="1000" placeholder="1-10000">
+            </td>
+        </tr>
+        <tr>
+            <td align="center">
+                <button onclick="strengthenPassword()">Gerar Senha Forte</button>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div id="result"></div>
+            </td>
+        </tr>
+        <tr>
+            <td class="config-button">
+                <button onclick="toggleConfig()"><i class="fas fa-cogs"></i></button> <!-- Ícone de configurações -->
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div id="configPanel" class="config">
+                    <label>Chave Privada:</label>
+                    <input type="password" id="privateKey" placeholder="Opcional">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="showOriginal"> Mostrar senha original
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="showIndex"> Mostrar índice usado
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="showKey"> Mostrar chave privada
+                    </label>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <script>
+        function toggleConfig() {
+            const panel = document.getElementById('configPanel');
+            const button = document.querySelector('.config-button button');
+            if (panel.style.display === 'none') {
+                panel.style.display = 'block';
+                button.textContent = 'Ocultar Configurações';
+                button.prepend(document.createElement('i').classList.add('fas', 'fa-cogs')); // Ícone de configurações
+            } else {
+                panel.style.display = 'none';
+                button.textContent = 'Configurações Avançadas';
+                button.prepend(document.createElement('i').classList.add('fas', 'fa-cogs'));
+            }
+        }
+
+        function strengthenPassword() {
+            const password = document.getElementById('password').value;
+            const index = document.getElementById('index').value;
+            const privateKey = document.getElementById('privateKey').value;
+            const resultDiv = document.getElementById('result');
+            
+            if (!password) {
+                alert('Por favor, digite uma senha');
+                return;
+            }
+            
+            if (!index || index < 1 || index > 10000) {
+                alert('Por favor, digite um índice entre 1 e 10000');
+                return;
+            }
+            
+            let baseString = password;
+            if (privateKey) {
+                baseString = password + ":" + privateKey;
+            }
+            
+            let strengthenedPassword = baseString;
+            
+            for (let i = 0; i < index; i++) {
+                strengthenedPassword = sha3_512(strengthenedPassword);
+            }
+            
+            const truncatedHash = strengthenedPassword.substring(0, 32);
+            
+            let output = '<div class="result">';
+            
+            if (document.getElementById('showOriginal').checked) {
+                output += `<b>Senha Original:</b><br><div class="copy-text">${password}</div><br>`;
+            }
+            
+            if (document.getElementById('showIndex').checked) {
+                output += `<b>Índice Usado:</b><br><div class="copy-text">${index}</div><br>`;
+            }
+            
+            if (document.getElementById('showKey').checked && privateKey) {
+                output += `<b>Chave Privada:</b><br><div class="copy-text">${privateKey}</div><br>`;
+            }
+            
+            output += `<b>Senha Fortalecida:</b><br><div class="copy-text">${truncatedHash}</div>`;
+            output += '</div>';
+            
+            resultDiv.innerHTML = output;
+        }
+    </script>
+</body>
+</html>
+
